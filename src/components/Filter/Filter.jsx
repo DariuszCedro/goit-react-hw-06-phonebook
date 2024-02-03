@@ -1,11 +1,9 @@
 import PropTypes from 'prop-types';
 import css from './Filter.module.css';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setStatusFilter } from '../../redux/store';
 
 export const Filter = () => {
-  const filter = useSelector(state => state.filter);
-
   const dispatch = useDispatch();
   const handleFilterChange = evt => {
     evt.preventDefault();

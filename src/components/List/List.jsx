@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { statusFilters } from '../../redux/store';
 import css from './List.module.css';
 import { useDispatch } from 'react-redux';
 import { deleteContact } from '../../redux/store';
+import { useEffect } from 'react';
 
 export const List = contactId => {
   const dispatch = useDispatch();
@@ -17,8 +17,11 @@ export const List = contactId => {
   );
   const handleDelete = contactId => {
     dispatch(deleteContact(contactId));
+    localStorage.setItem('contacts', JSON.stringify(contacts));
   };
-
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
   return (
     <ul>
       {filteredContacts.map(contact => (
