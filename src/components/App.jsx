@@ -3,10 +3,13 @@ import { nanoid } from 'nanoid';
 import { Form } from './Form/Form';
 import { Filter } from './Filter/Filter';
 import { List } from './List/List';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 export const App = () => {
+  const filter = useSelector(state => state.filter);
+
   const [contacts, setContacts] = useState(() => {
-    // getting stored value
     const saved = localStorage.getItem('contacts');
     if (!saved) {
       return localStorage.setItem(
@@ -24,8 +27,6 @@ export const App = () => {
   //   { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
   //   { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
   // ]);
-
-  const [filter, setFilter] = useState('');
 
   const handleAddContact = evt => {
     const form = document.querySelector('form');
@@ -57,7 +58,7 @@ export const App = () => {
   const handleFilter = evt => {
     evt.preventDefault();
 
-    setFilter(evt.target.value.toLowerCase());
+    return filter;
   };
 
   const showFilteredContacts = () => {
@@ -66,11 +67,6 @@ export const App = () => {
         contact.name.toLowerCase().includes(filter)
       );
   };
-
-  // useEffect(() => {
-  //   console.log('on mount solo');
-  //   setContacts(JSON.parse(localStorage.getItem('contacts')));
-  // }, []);
 
   useEffect(() => {
     localStorage.setItem('contacts', JSON.stringify(contacts));
