@@ -1,9 +1,21 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { devToolsEnhancer } from '@redux-devtools/extension';
 import { nanoid } from 'nanoid';
+const getStorage = () => {
+  const saved = localStorage.getItem('contacts');
+  if (!saved) {
+    return localStorage.setItem(
+      'contacts',
+      JSON.stringify([{ name: 'Tadeusz Przykład', id: '1', numer: '0070102' }])
+    );
+  }
+};
+console.log(getStorage);
 
 const initialState = {
-  contacts: JSON.parse(localStorage.getItem('contacts')),
+  contacts: JSON.parse(localStorage.getItem('contacts')) || [
+    { name: 'Tadzio' },
+  ],
   filter: '',
 };
 
@@ -30,9 +42,9 @@ export const deleteContact = contactId => {
   };
 };
 
-export const setStatusFilter = value => {
+export const setFilter = value => {
   return {
-    type: 'filter/setStatusFilter',
+    type: 'filter/setFilter',
     payload: value,
   };
 };
@@ -55,7 +67,7 @@ const rootReducer = (state = initialState, action) => {
         ),
       };
     }
-    case 'filter/setStatusFilter': {
+    case 'filter/setFilter': {
       return {
         ...state,
 

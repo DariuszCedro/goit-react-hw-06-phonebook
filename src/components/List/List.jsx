@@ -5,16 +5,19 @@ import { useDispatch } from 'react-redux';
 import { deleteContact } from '../../redux/store';
 import { useEffect } from 'react';
 
-export const List = contactId => {
+export const List = () => {
   const dispatch = useDispatch();
 
   const contacts = useSelector(state => state.contacts);
 
   const filter = useSelector(state => state.filter);
-
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter)
-  );
+  console.log(contacts);
+  const showFilteredContacts = () => {
+    if (contacts)
+      return contacts.filter(contact =>
+        contact.name.toLowerCase().includes(filter)
+      );
+  };
   const handleDelete = contactId => {
     dispatch(deleteContact(contactId));
     localStorage.setItem('contacts', JSON.stringify(contacts));
@@ -24,7 +27,7 @@ export const List = contactId => {
   }, [contacts]);
   return (
     <ul>
-      {filteredContacts.map(contact => (
+      {showFilteredContacts().map(contact => (
         <li key={contact.id}>
           {contact.name} : {contact.number}
           <button
