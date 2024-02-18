@@ -1,30 +1,21 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { devToolsEnhancer } from '@redux-devtools/extension';
+import { configureStore, createAction, createReducer } from '@reduxjs/toolkit';
 import { nanoid } from 'nanoid';
-const getStorage = () => {
-  const saved = localStorage.getItem('contacts');
-  if (!saved) {
-    return localStorage.setItem(
-      'contacts',
-      JSON.stringify([{ name: 'Tadeusz Przykład', id: '1', numer: '0070102' }])
-    );
-  }
-};
-console.log(getStorage);
 
-const initialState = {
-  contacts: JSON.parse(localStorage.getItem('contacts')) || [
-    { name: 'Tadzio' },
-  ],
-  filter: '',
-};
 
-//Selector functions
-export const getContacts = state => state.contacts;
-export const getFilter = state => state.filter;
+const contactsInitialState = 
+  JSON.parse(localStorage.getItem('contacts')) || [
+    { name: 'Tadzio Przykład', id: '1', number: '070-072-772'},
+  ]
+
+;
+
+const filterInitialState = "";
+  
+
+
 
 //Actions
-export const addContact = (name, number) => {
+export const addContact = createAction('contacts/addContact', (name, number) => {
   return {
     type: 'contacts/addContact',
     payload: {
@@ -33,54 +24,45 @@ export const addContact = (name, number) => {
       number: number,
     },
   };
-};
-
-export const deleteContact = contactId => {
+});
+export const deleteContact = createAction('contacts/deleteContact', contactId => {
   return {
     type: 'contacts/deleteContact',
     payload: contactId,
   };
-};
-
-export const setFilter = value => {
+});
+export const setFilter = createAction('filter/setFilter', value => {
   return {
     type: 'filter/setFilter',
     payload: value,
   };
-};
+});
+
 //Reducers
-const rootReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case 'contacts/addContact': {
-      return {
-        ...state,
 
-        contacts: [...state.contacts, action.payload],
-      };
-    }
-    case 'contacts/deleteContact': {
-      return {
-        ...state,
-
-        contacts: state.contacts.filter(
+const contactsReducer = createReducer(contactsInitialState, (builder)=>
+{
+  builder.addCase(addContact, (state, action) => {return [
+    ...state,
+    action.payload]}).addCase(deleteContact, (state, action)=> {
+      return [
+        
+        ...state.filter(
           contact => contact.id !== action.payload
         ),
-      };
-    }
-    case 'filter/setFilter': {
-      return {
-        ...state,
+        ]
+    })
+})
 
-        filter: action.payload,
-      };
-    }
-    default:
-      return state;
-  }
-};
-
-const enhancer = devToolsEnhancer();
-export const statusFilters = Object.freeze({ value: '' });
+const filterReducer = createReducer(filterInitialState, (builder)=>{
+  builder.addCase(setFilter, (state, action)=>{
+    return [action.payload]
+  })
+})
 
 //Store
-export const store = configureStore({ reducer: rootReducer });
+export const store = configureStore({ 
+  reducer: {
+    contacts: contactsReducer,
+    filter: filterReducer
+  }  });

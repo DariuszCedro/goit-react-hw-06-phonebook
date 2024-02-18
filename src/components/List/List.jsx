@@ -11,16 +11,18 @@ export const List = () => {
   const contacts = useSelector(state => state.contacts);
 
   const filter = useSelector(state => state.filter);
-  console.log(contacts);
+  
   const showFilteredContacts = () => {
+       
     if (contacts)
       return contacts.filter(contact =>
         contact.name.toLowerCase().includes(filter)
       );
+      return [];
   };
   const handleDelete = contactId => {
     dispatch(deleteContact(contactId));
-    localStorage.setItem('contacts', JSON.stringify(contacts));
+    
   };
   useEffect(() => {
     localStorage.setItem('contacts', JSON.stringify(contacts));
